@@ -9,7 +9,7 @@ int main(void)
 {
     // assign line len
     int line_len;
-    
+
     // initialize array of user line
     char user_inp[LIMIT];
 
@@ -17,34 +17,55 @@ int main(void)
     while ((line_len = create_user_line(user_inp, LIMIT)) > 1)
     {
         // output the text
-        printf("%s\n", user_inp);
+        printf("%s", user_inp);
     }
 }
 
 int create_user_line(char line[], int limit)
 {
-    // assign idx and char input
-    int i, c;
+    // assign idx, char input, and empty line counting
+    int i, c, empt_ln;
+    
+    // initialize the empty line var
+    empt_ln = 0;
 
     // for loop while i is less than limit and user input isn't a newline
-    for (i = 0; i < limit - 1 && (c = getchar()) != EOF && c != '\n'; i++)
+    for (i = 0; i < limit - 1 && (c = getchar()) != EOF && c != '%'; i++)
     {
-        // printf("curr idx: %i\n", i);
         // if the curr char is a space or tab
         if (c == ' ' || c == '\t')
         {
-            printf("space\n");
             // decrement the curr idx by 1
             i--;
-            // printf("curr idx after space: %i\n", i);
+        }
+        // else if the curr char is newline and its counter is 0
+        else if (c == '\n' && empt_ln == 0)
+        {
+            // increment the empty line count
+            empt_ln++; 
+        }
+        // else if the curr char is empty and the counter is at 1
+        else if (c == '\n' && empt_ln == 1)
+        {
+            // reset the counter back to 0
+            empt_ln = 0;
+            
+            // decrement the idx by 2
+            i -= 2;
+        }
+        // else it isnt empty space
+        else
+        {
+            // set the value at the curr idx to the curr char
+            line[i] = c;
         }
     }
-    // printf("line len: %d\n", i);
+    
     // if the last char is a newline
-    if (c == '\n')
+    if (c == '%')
     {
         // add newline to end of user string
-        line[i] = c;
+        line[i] = '\n';
 
         // increment the idx by 1
         i++;
@@ -52,7 +73,7 @@ int create_user_line(char line[], int limit)
 
     // set the curr idx to a 0 escape sequence
     line[i] = '\0';
-    // printf("line len: %d\n", i);
+    
     // return out the curr idx
     return i;
 }
