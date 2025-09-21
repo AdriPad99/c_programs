@@ -38,54 +38,74 @@ int get_user_line(char line[], int limit)
         {
             // increment the space var by 1
             ++spaces;
+            
+            // add tge space to the user line
+            line[i] = ' ';
         }
         // set the curr arr val to the curr char
         else
         {
-            if (spaces == 0)
+            // if there are no spaces
+            if (spaces == 0 && c != ' ')
             {
-                // add the curr char
+                printf("zero space\n");
+                // add the curr char to user line
                 line[i] = c;
             }
-            // else if spaces is == 4
-            else if (spaces == 4)
-            {
-                // go back to the beginning of the column
-                j = i - 3;
-
-                // notify of the existence of a tab
-                line[j] = '\\';
-                j++;
-                line[j] = 't';
-                j++;
-                
-                // reset the spaces counter
-                spaces = 0;
-            }
-            else if (spaces < 3)
-            {
-                // for loop adding space markers
-                for (j = i - spaces; j < i; j++)
+            
+            // if there is 4 or more spaces
+            if (spaces >= 4 && c != ' ')
+                // for loop 4 times adding a backspace escape sequence
+                for (j = i; j <= i +3 ; j++)
                 {
-                    printf("j is %d (child loop)\n", j);
-                    line[j] = '*';
+                    line[j] = '\b';
                 }
-
-                // reset the spaces counter
-                spaces = 0;
+                   
+                 // increment idx by 3
+                 i += 4;
+                 
+                 // add a backspace ES
+                 line[i] = '\\';
+                 
+                 // increment i
+                 i++;
+                 
+                 // add t
+                 line[i] = 't';
+                 
+                 // decrement spaces by 4
+                 spaces -= 4;
             }
+            
+             // if there is less than 4 spaces
+             if (spaces < 4 && c!= ' ')
+             {
+                  printf("less than 4 space\n");
+                  // for loop 4 times adding a backspace escape sequence
+                for (j = i; j < i + spaces ; j++)
+                {
+                    line[j] = '\b';
+                }
+                   
+                 // increment idx by 3
+                 i += spaces;
+                 
+                 // for loop to add space indicators
+                 for (j = i; j < i + spaces; j++)
+                 {
+                     line[j] = '*';
+                 }
+              
+                 // increment i
+                 i++;
+                 
+                 // add curr char
+                 line[i] = c;
+                 
+                 // decrement spaces by itself
+                 spaces = 0;
+             }
         }
-
-        // increment the column by 1
-        ++column;
-
-        // if the column is == 4
-        if (column == 4)
-        {
-            // reset the column and space vals
-            column = 0;
-        }
-    }
     
 
     /* if the curr char is a newline */
