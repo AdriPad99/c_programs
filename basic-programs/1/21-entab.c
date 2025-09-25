@@ -6,6 +6,12 @@
 /* prototype for getting user line */
 int get_user_line(char line[], int limit);
 
+/* prototyppe for adding tab to user line */
+void add_tab(char user_line[], int idx);
+
+/* prototype for adding space */
+void add_space(char user_line[], int idx);
+
 int main(void)
 {
     /* assign the user line len */
@@ -24,103 +30,99 @@ int main(void)
 
 int get_user_line(char line[], int limit)
 {
-    /* assign idx, user line, space, and column counter */
-    int i, j, c, spaces, column;
+    /* assign idx, user line, space, and idx tracker */
+    int i, j, c, end, spaces, idx;
 
     /* initialize space and column counter */
-    spaces = column = 0;
+    spaces = idx = j = 0;
 
     /* for loop to get user input */
     for (i = 0; i < limit - 1 && (c = getchar()) != EOF && c != '\n'; i++)
     {
-        // if the curr char is a space ' '
+
+        /* if the curr char is a space ' ' */
         if (c == ' ')
         {
-            // increment the space var by 1
-            ++spaces;
-            
-            // add tge space to the user line
-            line[i] = ' ';
+            // increment the amnt of spaces
+            spaces++;
         }
-        // set the curr arr val to the curr char
+        /* else its not a space */
         else
         {
-            // if there are no spaces
-            if (spaces == 0 && c != ' ')
+            /* inittialize tabs and amnt of spaces */
+            int tabs = spaces < 8 ? 0 : spaces / 8;
+            int amnt_spaces = spaces < 8 ? spaces : spaces % 8;
+            // printf("amnt of tabs: %i, amnt of spaces: %d\n", tabs, amnt_spaces);
+
+            if (spaces > 0)
             {
-                printf("zero space\n");
-                // add the curr char to user line
-                line[i] = c;
-            }
-            
-            // if there is 4 or more spaces
-            if (spaces >= 4 && c != ' ')
-                // for loop 4 times adding a backspace escape sequence
-                for (j = i; j <= i +3 ; j++)
+                if (tabs > 0)
                 {
-                    line[j] = '\b';
+                    /* initialize end of loop */
+                    end = j + tabs;
+
+                    /* for loop adding tabs for each tab */
+                    for (j = 0; j < end; j++)
+                    {
+                        /* add tab to arr */
+                        add_tab(line, idx);
+
+                        /* increment arr idx */
+                        idx++;
+                    }
                 }
-                   
-                 // increment idx by 3
-                 i += 4;
-                 
-                 // add a backspace ES
-                 line[i] = '\\';
-                 
-                 // increment i
-                 i++;
-                 
-                 // add t
-                 line[i] = 't';
-                 
-                 // decrement spaces by 4
-                 spaces -= 4;
-            }
-            
-             // if there is less than 4 spaces
-             if (spaces < 4 && c!= ' ')
-             {
-                  printf("less than 4 space\n");
-                  // for loop 4 times adding a backspace escape sequence
-                for (j = i; j < i + spaces ; j++)
+
+                if (amnt_spaces > 0)
                 {
-                    line[j] = '\b';
+                    /* initialize end of loop */
+                    end = j + amnt_spaces;
+
+                    /* for loop adding tabs for each tab */
+                    for (j = 0; j < end; j++)
+                    {
+                        /* add tab to arr */
+                        add_space(line, idx);
+
+                        /* increment arr idx */
+                        idx++;
+                    }
                 }
-                   
-                 // increment idx by 3
-                 i += spaces;
-                 
-                 // for loop to add space indicators
-                 for (j = i; j < i + spaces; j++)
-                 {
-                     line[j] = '*';
-                 }
-              
-                 // increment i
-                 i++;
-                 
-                 // add curr char
-                 line[i] = c;
-                 
-                 // decrement spaces by itself
-                 spaces = 0;
-             }
+
+                // reset the amnt of spaces back to 0
+                spaces = j = 0;
+            }
+
+            /* add the curr char to the arr */
+            line[idx] = c;
+
+            /* increment the idx */
+            idx++;
         }
-    
+    }
 
     /* if the curr char is a newline */
     if (c == '\n')
     {
         // set the curr idx to a newline
-        line[i] = '\n';
+        line[idx] = '\n';
 
         // increment the idx by 1
-        ++i;
+        ++idx;
     }
 
     /* set the last arr idx to '\0' escape sequence */
-    line[i] = '\0';
+    line[idx] = '\0';
 
     /* return out the curr line len */
-    return i;
+    return idx;
+}
+
+void add_tab(char user_line[], int idx)
+{
+    user_line[idx] = '\t';
+}
+
+void add_space(char user_line[], int idx)
+{
+    user_line[idx] = ' ';
 }
