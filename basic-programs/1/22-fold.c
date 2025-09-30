@@ -4,7 +4,7 @@
 
 int get_user_input(char user_line[], int limit);
 
-int add_seperator_check(char letter, int curr_col, char line[], int curr_idx[]);
+int add_seperator_check(char letter, char line[], int curr_idx[], int col);
 
 int main(void)
 {
@@ -30,34 +30,27 @@ int get_user_input(char user_line[], int limit)
     int idx[1];
 
     /* initialize the idx val */
-    idx[0] = 0;
+    idx[0] = column = 0;
 
     /* for loop getting user input */
     for (i = 0; i < limit - 1 && (c = getchar()) != EOF && c != '\n'; i++)
     {
         /* increment the col at the start */
         column++;
-
-        /* if curr idx is not a newline */
-        // if (c != '\n')
-        // {
-        //     /* set the curr char to to curr char */
-        //     user_line[idx] = c;
-
-        //     /* increment the idx */
-        //     idx++;
-        // }
-
-        /* if the curr char is the indicator of the
-        end of a word */
-        if (c == ' ' || c == '?' || c == '!' || c == ',')
+        
+         /* if the col length is 70 or greater */
+        if (column > 69)
         {
-            column = (c,column,user_line,idx);
+            column = add_seperator_check(c, user_line, idx, column);
         }
-        /* else if the curr char isn't a newline */
-        else if (c != '\n')
+        // else its not in the threshold
+        else
         {
-            column = (c,column,user_line,idx);
+            // add curr char to the arr
+            user_line[idx[0]] = c;
+            
+            // increment the idx by 1
+            idx[0]++;
         }
 
     }
@@ -76,27 +69,40 @@ int get_user_input(char user_line[], int limit)
     user_line[idx[0]] = '\0';
 
     /* return out the curr idx */
-    return idx;
+    return idx[0];
 }
 
-int add_seperator_check(char letter, int curr_col, char line[], int curr_idx[])
+int add_seperator_check(char letter, char line[], int curr_idx[], int col)
 {
-    /* if the col length is 80 */
-    if (curr_col < 80 && curr_col > 69)
-    {
-        /* add a newline to the curr idx in the array */
-        line[curr_idx[0]] = letter;
+        
+        // if the current letter is an indication of the wnd of a word
+        if (letter == ' ' || letter == '!' || letter == '?' || letter == ',')
+        {
+            /* add a letter to the curr idx in the array */
+            line[curr_idx[0]] = letter;
 
-        /* increment the idx by 1 */
-        curr_idx[0]++;
+            /* increment the idx by 1 */
+            curr_idx[0]++;
 
-        /* add a newline to the curr arr idx */
-        line[curr_idx[0]] = '\n';
+            /* add a newline to the curr arr idx */
+            line[curr_idx[0]] = '\n';
 
-        /* increment thee idx by 1 again */
-        curr_idx[0]++;
+            /* increment thee idx by 1 again */
+            curr_idx[0]++;
 
-        /* return out 0 to reset column length*/
-        return 0;
-    }
+            /* return out 0 to reset column length*/
+            return 0;
+        }
+        // else it isnt the indication
+       else
+       {
+           /* add a letter to the curr idx in the array */
+            line[curr_idx[0]] = letter;
+           
+           /* increment the idx by 1 */
+            curr_idx[0]++;
+            
+            // return out the curr col
+            return col;
+       }
 }
